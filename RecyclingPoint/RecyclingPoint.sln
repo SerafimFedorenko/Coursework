@@ -11,11 +11,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastru
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{1CABE83A-1F49-44F3-93AA-592187A5E802}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecyclingPoint.Domain", "Domain\RecyclingPoint.Domain.csproj", "{144FF510-C12C-4203-9FC6-2D3CBE3773A0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecyclingPoint.Domain", "Domain\RecyclingPoint.Domain.csproj", "{144FF510-C12C-4203-9FC6-2D3CBE3773A0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecyclingPoint.Application", "Application\RecyclingPoint.Application.csproj", "{930379C1-0069-4343-A9F2-B3F857A2F5E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecyclingPoint.Application", "Application\RecyclingPoint.Application.csproj", "{930379C1-0069-4343-A9F2-B3F857A2F5E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecyclingPoint.Rersistence", "RecyclingPoint.Rersistence\RecyclingPoint.Rersistence.csproj", "{70988503-A461-4317-9A73-7A47E374E395}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecyclingPoint.Persistence", "RecyclingPoint.Persistence\RecyclingPoint.Persistence.csproj", "{64E72C34-4A72-4736-9E19-8B58E4DAF2D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecyclingPoint.Web", "RecyclingPoint.Web\RecyclingPoint.Web.csproj", "{4C39C858-0EF0-4123-B884-7B2F3B3A59A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecyclingPoint.Tests", "RecyclingPoint.Tests\RecyclingPoint.Tests.csproj", "{7EE6B391-64AB-46A4-9674-BC9426DDD950}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +35,18 @@ Global
 		{930379C1-0069-4343-A9F2-B3F857A2F5E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{930379C1-0069-4343-A9F2-B3F857A2F5E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{930379C1-0069-4343-A9F2-B3F857A2F5E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{70988503-A461-4317-9A73-7A47E374E395}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{70988503-A461-4317-9A73-7A47E374E395}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{70988503-A461-4317-9A73-7A47E374E395}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{70988503-A461-4317-9A73-7A47E374E395}.Release|Any CPU.Build.0 = Release|Any CPU
+		{64E72C34-4A72-4736-9E19-8B58E4DAF2D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{64E72C34-4A72-4736-9E19-8B58E4DAF2D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{64E72C34-4A72-4736-9E19-8B58E4DAF2D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{64E72C34-4A72-4736-9E19-8B58E4DAF2D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C39C858-0EF0-4123-B884-7B2F3B3A59A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C39C858-0EF0-4123-B884-7B2F3B3A59A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C39C858-0EF0-4123-B884-7B2F3B3A59A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C39C858-0EF0-4123-B884-7B2F3B3A59A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EE6B391-64AB-46A4-9674-BC9426DDD950}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EE6B391-64AB-46A4-9674-BC9426DDD950}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EE6B391-64AB-46A4-9674-BC9426DDD950}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EE6B391-64AB-46A4-9674-BC9426DDD950}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,7 +54,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{144FF510-C12C-4203-9FC6-2D3CBE3773A0} = {39562BEA-241E-49AC-92B1-2A3229D1CB36}
 		{930379C1-0069-4343-A9F2-B3F857A2F5E3} = {39562BEA-241E-49AC-92B1-2A3229D1CB36}
-		{70988503-A461-4317-9A73-7A47E374E395} = {20CDDAD4-B211-470F-8507-A2D15F74E9BE}
+		{64E72C34-4A72-4736-9E19-8B58E4DAF2D1} = {20CDDAD4-B211-470F-8507-A2D15F74E9BE}
+		{4C39C858-0EF0-4123-B884-7B2F3B3A59A7} = {1162E1C4-7BFA-48FC-917B-8CEAB280FB8F}
+		{7EE6B391-64AB-46A4-9674-BC9426DDD950} = {1CABE83A-1F49-44F3-93AA-592187A5E802}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {27D1FFEB-AC25-4A9C-9E26-344AC9D66022}
