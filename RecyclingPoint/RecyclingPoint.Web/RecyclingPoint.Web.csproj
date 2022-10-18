@@ -6,4 +6,9 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Application\RecyclingPoint.Application.csproj" />
+    <ProjectReference Include="..\RecyclingPoint.Persistence\RecyclingPoint.Persistence.csproj" />
+  </ItemGroup>
+
 </Project>

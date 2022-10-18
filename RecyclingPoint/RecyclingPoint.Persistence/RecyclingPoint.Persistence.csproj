@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Domain\RecyclingPoint.Domain.csproj" />
+    <ProjectReference Include="..\Application\RecyclingPoint.Application.csproj" />
   </ItemGroup>
 
 </Project>
