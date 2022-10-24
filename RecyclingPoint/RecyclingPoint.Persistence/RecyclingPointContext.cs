@@ -12,6 +12,10 @@ namespace RecyclingPoint.Persistence
         public DbSet<Employee>? Employees { get; set; }
         public DbSet<Storage>? Storages { get; set; }
         public DbSet<AcceptedRecyclable>? AcceptedRecyclables { get; set; }
+        public RecPointContext(DbContextOptions<RecPointContext> options): base(options)
+        {
+
+        }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             ConfigurationBuilder builder = new();
