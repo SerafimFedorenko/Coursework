@@ -7,12 +7,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
 using WebApp.Models;
+using WebApp.Models.SortStates;
+using WebApp.ViewModels;
 
 namespace WebApp.Controllers
 {
     public class StorageTypesController : Controller
     {
         private readonly RecPointContext _context;
+        private int _pageSize = 25;
+        private string _currentPage = "pageStorageTypes";
+        private string _currentSortOrder = "sortOrder";
+        private string _currentFilterStorageType = "searchStorageTypeStorageTypes";
 
         public StorageTypesController(RecPointContext context)
         {
@@ -20,9 +26,28 @@ namespace WebApp.Controllers
         }
 
         // GET: StorageTypes
-        public async Task<IActionResult> Index()
+
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
+        public IActionResult Index(SortStateStorageType? sortOrder, string searchStorageType, int? page, bool resetFilter = false)
         {
-              return View(await _context.StorageTypes.ToListAsync());
+            IQueryable<StorageType> storageTypes = _context.StorageTypes;
+            sortOrder ??= GetSortStateFromSessionOrSetDefault();
+            page ??= GetCurrentPageFromSessionOrSetDefault();
+            if (resetFilter)
+            {
+                HttpContext.Session.Remove(_currentFilterStorageType);
+            }
+            searchStorageType ??= GetCurrentFilterStorageTypeOrSetDefault();
+            storageTypes = Search(storageTypes, (SortStateStorageType)sortOrder, searchStorageType);
+            var count = storageTypes.Count();
+            storageTypes = storageTypes.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
+            SaveValuesInSession((SortStateStorageType)sortOrder, (int)page, searchStorageType);
+            StorageTypesViewModel StorageTypesView = new StorageTypesViewModel()
+            {
+                StorageTypes = storageTypes,
+                PageViewModel = new PageViewModel(count, (int)page, _pageSize)
+            };
+            return View(StorageTypesView);
         }
 
         // GET: StorageTypes/Details/5
@@ -156,6 +181,49 @@ namespace WebApp.Controllers
         private bool StorageTypeExists(int id)
         {
           return _context.StorageTypes.Any(e => e.Id == id);
+        }
+        private IQueryable<StorageType> Search(IQueryable<StorageType> storageTypes,
+            SortStateStorageType sortOrder, string searchStorageType)
+        {
+            ViewData["searchStorageType"] = searchStorageType;
+            storageTypes = storageTypes.Where(p => p.Name.Contains(searchStorageType ?? ""));
+
+            ViewData["Name"] = sortOrder == SortStateStorageType.NameAsc ? SortStateStorageType.NameDesc : SortStateStorageType.NameAsc;
+
+            storageTypes = sortOrder switch
+            {
+                SortStateStorageType.NameAsc => storageTypes.OrderBy(st => st.Name),
+                SortStateStorageType.NameDesc => storageTypes.OrderByDescending(st => st.Name),
+                SortStateStorageType.No => storageTypes.OrderBy(st => st.Id),
+                _ => storageTypes.OrderBy(st => st.Id)
+            };
+
+            return storageTypes;
+        }
+        private void SaveValuesInSession(SortStateStorageType sortOrder, int page, string searchStorageType)
+        {
+            HttpContext.Session.Remove(_currentSortOrder);
+            HttpContext.Session.Remove(_currentPage);
+            HttpContext.Session.Remove(_currentFilterStorageType);
+            HttpContext.Session.SetString(_currentSortOrder, sortOrder.ToString());
+            HttpContext.Session.SetString(_currentPage, page.ToString());
+            HttpContext.Session.SetString(_currentFilterStorageType, searchStorageType);
+        }
+        private SortStateStorageType GetSortStateFromSessionOrSetDefault()
+        {
+            return HttpContext.Session.Keys.Contains(_currentSortOrder) ?
+                (SortStateStorageType)Enum.Parse(typeof(SortStateStorageType),
+                HttpContext.Session.GetString(_currentSortOrder)) : SortStateStorageType.No;
+        }
+        private int GetCurrentPageFromSessionOrSetDefault()
+        {
+            return HttpContext.Session.Keys.Contains(_currentPage) ?
+                Convert.ToInt32(HttpContext.Session.GetString(_currentPage)) : 1;
+        }
+        private string GetCurrentFilterStorageTypeOrSetDefault()
+        {
+            return HttpContext.Session.Keys.Contains(_currentFilterStorageType) ?
+                HttpContext.Session.GetString(_currentFilterStorageType) : string.Empty;
         }
     }
 }

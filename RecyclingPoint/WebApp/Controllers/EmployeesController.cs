@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
 using WebApp.Models;
+using WebApp.Models.SortStates;
 using WebApp.ViewModels;
 using WebApp.Infrastructure;
 using System.Data;

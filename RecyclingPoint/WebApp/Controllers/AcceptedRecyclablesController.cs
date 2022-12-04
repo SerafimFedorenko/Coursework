@@ -22,7 +22,7 @@ namespace WebApp.Controllers
         // GET: AcceptedRecyclables
         public async Task<IActionResult> Index()
         {
-            var recPointContext = _context.AcceptedRecyclables.Include(a => a.Employee).Include(a => a.RecyclableType).Include(a => a.Storage);
+            var recPointContext = _context.AcceptedRecyclables.Take(20).Include(a => a.Employee).Include(a => a.RecyclableType).Include(a => a.Storage);
             return View(await recPointContext.ToListAsync());
         }
 

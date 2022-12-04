@@ -8,12 +8,13 @@ namespace WebApp.Models
         [Key]
         public int Id { get; set; }
         [ForeignKey("RecyclableType")]
+        [Display(Name = "Тип вторсырья")]
         public int RecyclableTypeId { get; set; }
         [ForeignKey("Employee")]
-
+        [Display(Name = "Сотрудник")]
         public int EmployeeId { get; set; }
         [ForeignKey("Storage")]
-
+        [Display(Name = "Склад")]
         public int StorageId { get; set; }
         public Employee? Employee { get; set; }
         public Storage? Storage { get; set; }
@@ -21,6 +22,7 @@ namespace WebApp.Models
         [Display(Name = "Количество")]
         public int Quantity { get; set; }
         [Display(Name = "Дата")]
+        [DataType(DataType.Date)]
         public DateTime Date { get; set; }
     }
 }
