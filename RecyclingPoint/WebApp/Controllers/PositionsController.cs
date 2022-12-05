@@ -17,7 +17,7 @@ namespace WebApp.Controllers
         private readonly RecPointContext _context;
         private int _pageSize = 25;
         private string _currentPage = "pagePositions";
-        private string _currentSortOrder = "sortOrder";
+        private string _currentSortOrder = "sortOrderPositions";
         private string _currentFilterPosition = "searchPositionPositions";
 
         public PositionsController(RecPointContext context)

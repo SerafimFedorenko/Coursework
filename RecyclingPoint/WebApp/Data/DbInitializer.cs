@@ -15,12 +15,12 @@ namespace WebApp.Data
                 return;
             }
 
-            const int positionsNumber = 50;
-            const int storageTypesNumber = 50;
-            const int recyclableTypesNumber = 50;
-            const int employeesNumber = 5000;
-            const int storagesNumber = 5000;
-            const int acceptedRecyclableNumber = 5000;
+            const int positionsNumber = 100;
+            const int storageTypesNumber = 100;
+            const int recyclableTypesNumber = 100;
+            const int employeesNumber = 10000;
+            const int storagesNumber = 10000;
+            const int acceptedRecyclableNumber = 10000;
 
             Random random = new Random(33);
 

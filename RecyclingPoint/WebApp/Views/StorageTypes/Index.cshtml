@@ -2,14 +2,14 @@
 @model StorageTypesViewModel
 
 @{
-    ViewData["Title"] = "Типы складов";
+    ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Список складов</h1>
+<h1>Список типов складов</h1>
 
 <p>
-    <a asp-action="Create">Добавить склад</a>
+    <a asp-action="Create">Добавить тип склада</a>
 </p>
 
 @using (Html.BeginForm("Index", "StorageTypes", FormMethod.Post))
@@ -39,6 +39,16 @@
                     @Html.DisplayNameFor(model => model.StorageTypes.FirstOrDefault().Name)
                 </a>
             </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.Temperature">
+                    @Html.DisplayNameFor(model => model.StorageTypes.FirstOrDefault().Temperature)
+                </a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.Humidity">
+                    @Html.DisplayNameFor(model => model.StorageTypes.FirstOrDefault().Humidity)
+                </a>
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -48,6 +58,12 @@
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Temperature)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Humidity)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |

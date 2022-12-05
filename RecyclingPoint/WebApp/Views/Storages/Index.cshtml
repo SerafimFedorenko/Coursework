@@ -2,7 +2,7 @@
 @model StoragesViewModel
 
 @{
-    ViewData["Title"] = "Складские помещения";
+    ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -16,7 +16,7 @@
 {
     <fieldset>
         Название:
-        <input type="text" name="searchName" value="@ViewData["searchName"]?.ToString()" />
+        <input type="text" name="searchNameStorages" value="@ViewData["searchNameStorages"]?.ToString()" />
         Тип склада:
         <input type="text" name="searchStorageType" value="@ViewData["searchStorageType"]?.ToString()" />
         <input type="submit" value="Найти" />

@@ -17,6 +17,12 @@
                 @Html.DisplayNameFor(model => model.Employee)
             </th>
             <th>
+                Должность сотрудника
+            </th>
+            <th>
+                Опыт сотрудника
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Storage)
             </th>
             <th>
@@ -35,13 +41,21 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Employee.Id)
+                @(item.Employee.Surname.ToString() + " " 
+                + item.Employee.Name.ToString() + " " 
+                + item.Employee.Patronymic.ToString())
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Storage.Id)
+                @Html.DisplayFor(modelItem => item.Employee.Position.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.RecyclableType.Id)
+                @Html.DisplayFor(modelItem => item.Employee.Experience)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Storage.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RecyclableType.Name)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Quantity)

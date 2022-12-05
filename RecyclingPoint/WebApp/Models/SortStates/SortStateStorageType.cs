@@ -4,6 +4,10 @@
 	{
 		No,
 		NameAsc,
-		NameDesc
+		NameDesc,
+		TemperatureAsc,
+		TemperatureDesc,
+		HumidityAsc,
+		HumidityDesc,
 	}
 }

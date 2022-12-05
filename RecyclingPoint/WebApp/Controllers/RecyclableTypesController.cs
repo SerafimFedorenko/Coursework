@@ -7,12 +7,18 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
 using WebApp.Models;
+using WebApp.Models.SortStates;
+using WebApp.ViewModels;
 
 namespace WebApp.Controllers
 {
     public class RecyclableTypesController : Controller
     {
         private readonly RecPointContext _context;
+        private int _pageSize = 25;
+        private string _currentPage = "pageRecyclableTypes";
+        private string _currentSortOrder = "sortOrderRecyclableTypes";
+        private string _currentFilterRecyclableType = "searchRecyclableTypeRecyclableTypes";
 
         public RecyclableTypesController(RecPointContext context)
         {
@@ -20,9 +26,28 @@ namespace WebApp.Controllers
         }
 
         // GET: RecyclableTypes
-        public async Task<IActionResult> Index()
+
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
+        public IActionResult Index(SortStateRecyclableType? sortOrder, string searchRecyclableType, int? page, bool resetFilter = false)
         {
-              return View(await _context.RecyclableTypes.ToListAsync());
+            IQueryable<RecyclableType> RecyclableTypes = _context.RecyclableTypes;
+            sortOrder ??= GetSortStateFromSessionOrSetDefault();
+            page ??= GetCurrentPageFromSessionOrSetDefault();
+            if (resetFilter)
+            {
+                HttpContext.Session.Remove(_currentFilterRecyclableType);
+            }
+            searchRecyclableType ??= GetCurrentFilterRecyclableTypeOrSetDefault();
+            RecyclableTypes = Search(RecyclableTypes, (SortStateRecyclableType)sortOrder, searchRecyclableType);
+            var count = RecyclableTypes.Count();
+            RecyclableTypes = RecyclableTypes.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
+            SaveValuesInSession((SortStateRecyclableType)sortOrder, (int)page, searchRecyclableType);
+            RecyclableTypesViewModel RecyclableTypesView = new RecyclableTypesViewModel()
+            {
+                RecyclableTypes = RecyclableTypes,
+                PageViewModel = new PageViewModel(count, (int)page, _pageSize)
+            };
+            return View(RecyclableTypesView);
         }
 
         // GET: RecyclableTypes/Details/5
@@ -155,7 +180,53 @@ namespace WebApp.Controllers
 
         private bool RecyclableTypeExists(int id)
         {
-          return _context.RecyclableTypes.Any(e => e.Id == id);
+            return _context.RecyclableTypes.Any(e => e.Id == id);
+        }
+        private IQueryable<RecyclableType> Search(IQueryable<RecyclableType> recyclableTypes,
+            SortStateRecyclableType sortOrder, string searchRecyclableType)
+        {
+            ViewData["searchRecyclableType"] = searchRecyclableType;
+            recyclableTypes = recyclableTypes.Where(p => p.Name.Contains(searchRecyclableType ?? ""));
+
+            ViewData["Name"] = sortOrder == SortStateRecyclableType.NameAsc ? SortStateRecyclableType.NameDesc : SortStateRecyclableType.NameAsc;
+            ViewData["Price"] = sortOrder == SortStateRecyclableType.PriceAsc ? SortStateRecyclableType.PriceDesc : SortStateRecyclableType.PriceAsc;
+
+            recyclableTypes = sortOrder switch
+            {
+                SortStateRecyclableType.NameAsc => recyclableTypes.OrderBy(rt => rt.Name),
+                SortStateRecyclableType.NameDesc => recyclableTypes.OrderByDescending(rt => rt.Name),
+                SortStateRecyclableType.PriceAsc => recyclableTypes.OrderBy(rt => rt.Price),
+                SortStateRecyclableType.PriceDesc => recyclableTypes.OrderByDescending(rt => rt.Price),
+                SortStateRecyclableType.No => recyclableTypes.OrderBy(rt => rt.Id),
+                _ => recyclableTypes.OrderBy(rt => rt.Id)
+            };
+
+            return recyclableTypes;
+        }
+        private void SaveValuesInSession(SortStateRecyclableType sortOrder, int page, string searchRecyclableType)
+        {
+            HttpContext.Session.Remove(_currentSortOrder);
+            HttpContext.Session.Remove(_currentPage);
+            HttpContext.Session.Remove(_currentFilterRecyclableType);
+            HttpContext.Session.SetString(_currentSortOrder, sortOrder.ToString());
+            HttpContext.Session.SetString(_currentPage, page.ToString());
+            HttpContext.Session.SetString(_currentFilterRecyclableType, searchRecyclableType);
+        }
+        private SortStateRecyclableType GetSortStateFromSessionOrSetDefault()
+        {
+            return HttpContext.Session.Keys.Contains(_currentSortOrder) ?
+                (SortStateRecyclableType)Enum.Parse(typeof(SortStateRecyclableType),
+                HttpContext.Session.GetString(_currentSortOrder)) : SortStateRecyclableType.No;
+        }
+        private int GetCurrentPageFromSessionOrSetDefault()
+        {
+            return HttpContext.Session.Keys.Contains(_currentPage) ?
+                Convert.ToInt32(HttpContext.Session.GetString(_currentPage)) : 1;
+        }
+        private string GetCurrentFilterRecyclableTypeOrSetDefault()
+        {
+            return HttpContext.Session.Keys.Contains(_currentFilterRecyclableType) ?
+                HttpContext.Session.GetString(_currentFilterRecyclableType) : string.Empty;
         }
     }
 }

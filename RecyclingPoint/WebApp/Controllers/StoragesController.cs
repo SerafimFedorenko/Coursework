@@ -15,9 +15,9 @@ namespace WebApp.Controllers
     public class StoragesController : Controller
     {
         private readonly RecPointContext _context;
-        private int _pageSize = 40;
+        private int _pageSize = 25;
         private string _currentPage = "pageStorages";
-        private string _currentSortOrder = "sortOrder";
+        private string _currentSortOrder = "sortOrderStorages";
         private string _currentFilterStorageType = "searchStorageTypeStorages";
         private string _currentFilterName = "searchNameStorages";
 
@@ -27,8 +27,8 @@ namespace WebApp.Controllers
         }
 
         // GET: Employees
-        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
-        public IActionResult Index(SortStateStorage? sortOrder, string searchStorageType, string searchName, int? page, bool resetFilter = false)
+        //[ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
+        public IActionResult Index(SortStateStorage? sortOrder, string searchStorageType, string searchNameStorages, int? page, bool resetFilter = false)
         {
             IQueryable<Storage> storages = _context.Storages.Include(s => s.StorageType);
             sortOrder ??= GetSortStateFromSessionOrSetDefault();
@@ -39,11 +39,11 @@ namespace WebApp.Controllers
                 HttpContext.Session.Remove(_currentFilterName);
             }
             searchStorageType ??= GetCurrentFilterStorageTypeOrSetDefault();
-            searchName ??= GetCurrentFilterNameOrSetDefault();
-            storages = Search(storages, (SortStateStorage)sortOrder, searchStorageType, searchName);
+            searchNameStorages ??= GetCurrentFilterNameOrSetDefault();
+            storages = Search(storages, (SortStateStorage)sortOrder, searchStorageType, searchNameStorages);
             var count = storages.Count();
             storages = storages.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
-            SaveValuesInSession((SortStateStorage)sortOrder, (int)page, searchStorageType, searchName);
+            SaveValuesInSession((SortStateStorage)sortOrder, (int)page, searchStorageType, searchNameStorages);
             StoragesViewModel storagesView = new StoragesViewModel()
             {
                 Storages = storages,
@@ -74,7 +74,7 @@ namespace WebApp.Controllers
         // GET: Storages/Create
         public IActionResult Create()
         {
-            ViewData["StorageTypeId"] = new SelectList(_context.StorageTypes, "Id", "Id");
+            ViewData["StorageTypeId"] = new SelectList(_context.StorageTypes, "Id", "Name");
             return View();
         }
 
@@ -231,7 +231,7 @@ namespace WebApp.Controllers
 
             return storages;
         }
-        private void SaveValuesInSession(SortStateStorage sortOrder, int page, string searchStorageType, string searchName)
+        private void SaveValuesInSession(SortStateStorage sortOrder, int page, string searchStorageType, string searchNameStorages)
         {
             HttpContext.Session.Remove(_currentSortOrder);
             HttpContext.Session.Remove(_currentPage);
@@ -239,7 +239,7 @@ namespace WebApp.Controllers
             HttpContext.Session.Remove(_currentFilterStorageType);
             HttpContext.Session.SetString(_currentSortOrder, sortOrder.ToString());
             HttpContext.Session.SetString(_currentPage, page.ToString());
-            HttpContext.Session.SetString(_currentFilterName, searchName);
+            HttpContext.Session.SetString(_currentFilterName, searchNameStorages);
             HttpContext.Session.SetString(_currentFilterStorageType, searchStorageType);
         }
         private SortStateStorage GetSortStateFromSessionOrSetDefault()

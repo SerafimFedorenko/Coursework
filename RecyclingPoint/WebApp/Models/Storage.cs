@@ -26,7 +26,7 @@ namespace WebApp.Models
         [Display(Name = "Дата последней проверки")]
         [DataType(DataType.Date)]
         public DateTime CheckDate { get; set; }
-        public StorageType StorageType { get; set; }
+        public StorageType? StorageType { get; set; }
         public ICollection<AcceptedRecyclable> AcceptedRecyclables { get; set; }
         public Storage()
         {

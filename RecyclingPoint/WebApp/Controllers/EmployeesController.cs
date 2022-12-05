@@ -21,7 +21,7 @@ namespace WebApp.Controllers
         private readonly RecPointContext _context;
         private int _pageSize = 40;
         private string _currentPage = "page";
-        private string _currentSortOrder = "sortOrder";
+        private string _currentSortOrder = "sortOrderEmployees";
         private string _currentFilterSurname = "searchSurname";
         private string _currentFilterPosition = "searchPosition";
 

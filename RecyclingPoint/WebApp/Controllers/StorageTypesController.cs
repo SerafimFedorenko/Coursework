@@ -17,7 +17,7 @@ namespace WebApp.Controllers
         private readonly RecPointContext _context;
         private int _pageSize = 25;
         private string _currentPage = "pageStorageTypes";
-        private string _currentSortOrder = "sortOrder";
+        private string _currentSortOrder = "sortOrderStorageTypes";
         private string _currentFilterStorageType = "searchStorageTypeStorageTypes";
 
         public StorageTypesController(RecPointContext context)
@@ -189,11 +189,17 @@ namespace WebApp.Controllers
             storageTypes = storageTypes.Where(p => p.Name.Contains(searchStorageType ?? ""));
 
             ViewData["Name"] = sortOrder == SortStateStorageType.NameAsc ? SortStateStorageType.NameDesc : SortStateStorageType.NameAsc;
+            ViewData["Temperature"] = sortOrder == SortStateStorageType.TemperatureAsc ? SortStateStorageType.TemperatureDesc : SortStateStorageType.TemperatureAsc;
+            ViewData["Humidity"] = sortOrder == SortStateStorageType.HumidityAsc ? SortStateStorageType.HumidityDesc : SortStateStorageType.HumidityAsc;
 
             storageTypes = sortOrder switch
             {
                 SortStateStorageType.NameAsc => storageTypes.OrderBy(st => st.Name),
                 SortStateStorageType.NameDesc => storageTypes.OrderByDescending(st => st.Name),
+                SortStateStorageType.HumidityAsc => storageTypes.OrderBy(st => st.Humidity),
+                SortStateStorageType.HumidityDesc => storageTypes.OrderByDescending(st => st.Humidity),
+                SortStateStorageType.TemperatureAsc => storageTypes.OrderBy(st => st.Temperature),
+                SortStateStorageType.TemperatureDesc => storageTypes.OrderByDescending(st => st.Temperature),
                 SortStateStorageType.No => storageTypes.OrderBy(st => st.Id),
                 _ => storageTypes.OrderBy(st => st.Id)
             };
