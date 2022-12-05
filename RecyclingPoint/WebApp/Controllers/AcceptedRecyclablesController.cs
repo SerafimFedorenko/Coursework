@@ -79,9 +79,15 @@ namespace WebApp.Controllers
         // GET: AcceptedRecyclables/Create
         public IActionResult Create()
         {
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id");
-            ViewData["RecyclableTypeId"] = new SelectList(_context.RecyclableTypes, "Id", "Id");
-            ViewData["StorageId"] = new SelectList(_context.Storages, "Id", "Id");
+            ViewData["EmployeeId"] = new SelectList(
+                _context.Employees.Select(e => new
+                {
+                    Id = e.Id,
+                    FullName = e.Surname + " " + e.Name + " " + e.Patronymic
+                }),
+                "Id", "FullName");
+            ViewData["RecyclableTypeId"] = new SelectList(_context.RecyclableTypes, "Id", "Name");
+            ViewData["StorageId"] = new SelectList(_context.Storages, "Id", "Name");
             return View();
         }
 
@@ -98,9 +104,15 @@ namespace WebApp.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id", acceptedRecyclable.EmployeeId);
-            ViewData["RecyclableTypeId"] = new SelectList(_context.RecyclableTypes, "Id", "Id", acceptedRecyclable.RecyclableTypeId);
-            ViewData["StorageId"] = new SelectList(_context.Storages, "Id", "Id", acceptedRecyclable.StorageId);
+            ViewData["EmployeeId"] = new SelectList(
+                _context.Employees.Select(e => new
+                {
+                    Id = e.Id,
+                    FullName = e.Surname + " " + e.Name + " " + e.Patronymic
+                }),
+                "Id", "FullName", acceptedRecyclable.EmployeeId);
+            ViewData["RecyclableTypeId"] = new SelectList(_context.RecyclableTypes, "Id", "Name", acceptedRecyclable.RecyclableTypeId);
+            ViewData["StorageId"] = new SelectList(_context.Storages, "Id", "Name", acceptedRecyclable.StorageId);
             return View(acceptedRecyclable);
         }
 
@@ -117,9 +129,15 @@ namespace WebApp.Controllers
             {
                 return NotFound();
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id", acceptedRecyclable.EmployeeId);
-            ViewData["RecyclableTypeId"] = new SelectList(_context.RecyclableTypes, "Id", "Id", acceptedRecyclable.RecyclableTypeId);
-            ViewData["StorageId"] = new SelectList(_context.Storages, "Id", "Id", acceptedRecyclable.StorageId);
+            ViewData["EmployeeId"] = new SelectList(
+                _context.Employees.Select(e => new
+                {
+                    Id = e.Id,
+                    FullName = e.Surname + " " + e.Name + " " + e.Patronymic
+                }),
+                "Id", "FullName", acceptedRecyclable.EmployeeId);
+            ViewData["RecyclableTypeId"] = new SelectList(_context.RecyclableTypes, "Id", "Name", acceptedRecyclable.RecyclableTypeId);
+            ViewData["StorageId"] = new SelectList(_context.Storages, "Id", "Name", acceptedRecyclable.StorageId);
             return View(acceptedRecyclable);
         }
 
@@ -155,9 +173,15 @@ namespace WebApp.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["EmployeeId"] = new SelectList(_context.Employees, "Id", "Id", acceptedRecyclable.EmployeeId);
-            ViewData["RecyclableTypeId"] = new SelectList(_context.RecyclableTypes, "Id", "Id", acceptedRecyclable.RecyclableTypeId);
-            ViewData["StorageId"] = new SelectList(_context.Storages, "Id", "Id", acceptedRecyclable.StorageId);
+            ViewData["EmployeeId"] = new SelectList(
+                _context.Employees.Select(e => new 
+                { 
+                    Id = e.Id,
+                    FullName = e.Surname + " " + e.Name + " " + e.Patronymic
+                }), 
+                "Id", "FullName", acceptedRecyclable.EmployeeId);
+            ViewData["RecyclableTypeId"] = new SelectList(_context.RecyclableTypes, "Id", "Name", acceptedRecyclable.RecyclableTypeId);
+            ViewData["StorageId"] = new SelectList(_context.Storages, "Id", "Name", acceptedRecyclable.StorageId);
             return View(acceptedRecyclable);
         }
 
