@@ -22,8 +22,8 @@ namespace WebApp.Controllers
         private int _pageSize = 40;
         private string _currentPage = "page";
         private string _currentSortOrder = "sortOrderEmployees";
-        private string _currentFilterSurname = "searchSurname";
-        private string _currentFilterPosition = "searchPosition";
+        private string _currentFilterSurname = "searchSurnameEmployees";
+        private string _currentFilterPosition = "searchPositionEmployees";
 
         public EmployeesController(RecPointContext context)
         {

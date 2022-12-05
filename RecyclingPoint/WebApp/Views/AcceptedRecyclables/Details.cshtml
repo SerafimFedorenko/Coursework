@@ -5,10 +5,10 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<h1>Подробности</h1>
 
 <div>
-    <h4>AcceptedRecyclable</h4>
+    <h4>Принятое вторсырьё</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -21,13 +21,13 @@
             @Html.DisplayNameFor(model => model.Storage)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Storage.Id)
+            @Html.DisplayFor(model => model.Storage.Name)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.RecyclableType)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.RecyclableType.Id)
+            @Html.DisplayFor(model => model.RecyclableType.Name)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Quantity)
@@ -44,6 +44,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Редактировать</a> |
+    <a asp-action="Index">Вернуться к списку</a>
 </div>

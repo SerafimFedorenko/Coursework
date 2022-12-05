@@ -16,8 +16,11 @@ namespace WebApp.Models
         [ForeignKey("Storage")]
         [Display(Name = "Склад")]
         public int StorageId { get; set; }
+        [Display(Name = "Сотрудник")]
         public Employee? Employee { get; set; }
+        [Display(Name = "Склад")]
         public Storage? Storage { get; set; }
+        [Display(Name = "Тип вторсырья")]
         public RecyclableType? RecyclableType { get; set; }
         [Display(Name = "Количество")]
         public int Quantity { get; set; }

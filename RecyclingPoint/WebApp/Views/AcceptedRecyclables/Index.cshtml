@@ -1,55 +1,75 @@
-﻿@model IEnumerable<WebApp.Models.AcceptedRecyclable>
+﻿@model WebApp.ViewModels.AcceptedRecyclablesViewModel
 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Index</h1>
+<h1>Принятое вторсырьё</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Добавить</a>
 </p>
+
+@using (Html.BeginForm("Index", "AcceptedRecyclables", FormMethod.Post))
+{
+    <fieldset>
+        Тип вторсырья:
+        <input type="text" name="searchRecTypeAccRec" value="@ViewData["searchRecTypeAccRec"]?.ToString()" />
+        Склад:
+        <input type="text" name="searchStorageAccRec" value="@ViewData["searchStorageAccRec"]?.ToString()" />
+        <input type="submit" value="Найти" />
+        <a asp-action="Index"
+       asp-route-resetFilter="@true"
+       asp-route-page="@Model.PageViewModel.PageNumber"
+       asp-route-pageSize="@Model.PageViewModel.PageSize"
+       class="btn btn-danger">
+            <i class="glyphicon glyphicon-chevron-left"></i>
+            Сброс фильтра
+        </a>
+    </fieldset>
+}
+
+@await Html.PartialAsync("_PageButtons", Model.PageViewModel)
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Employee)
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.Employee">
+                    @Html.DisplayNameFor(model => model.AcceptedRecyclables.FirstOrDefault().Employee)
+                </a>
             </th>
             <th>
-                Должность сотрудника
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.Storage">
+                    @Html.DisplayNameFor(model => model.AcceptedRecyclables.FirstOrDefault().Storage)
+                </a>
             </th>
             <th>
-                Опыт сотрудника
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.RecyclableType">
+                    @Html.DisplayNameFor(model => model.AcceptedRecyclables.FirstOrDefault().RecyclableType)
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Storage)
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.Quantity">
+                    @Html.DisplayNameFor(model => model.AcceptedRecyclables.FirstOrDefault().Quantity)
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.RecyclableType)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Date)
+                <a asp-action="Index" asp-route-sortOrder="@ViewBag.Date">
+                    @Html.DisplayNameFor(model => model.AcceptedRecyclables.FirstOrDefault().Date)
+                </a>
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.AcceptedRecyclables) {
         <tr>
             <td>
                 @(item.Employee.Surname.ToString() + " " 
                 + item.Employee.Name.ToString() + " " 
                 + item.Employee.Patronymic.ToString())
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Employee.Position.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Employee.Experience)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Storage.Name)
@@ -64,9 +84,9 @@
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Подробности</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
             </td>
         </tr>
 }

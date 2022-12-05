@@ -7,23 +7,52 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
 using WebApp.Models;
+using WebApp.Models.SortStates;
+using WebApp.ViewModels;
 
 namespace WebApp.Controllers
 {
     public class AcceptedRecyclablesController : Controller
     {
         private readonly RecPointContext _context;
+        private int _pageSize = 40;
+        private string _currentPage = "page";
+        private string _currentSortOrder = "sortOrderAcceptedRec";
+        private string _currentFilterRecType = "searchRecTypeAccRec";
+        private string _currentFilterStorage = "searchPositionAccRec";
+        private string _currentFilterEmployee = "searchEmployeeAccRec";
 
         public AcceptedRecyclablesController(RecPointContext context)
         {
             _context = context;
         }
 
-        // GET: AcceptedRecyclables
-        public async Task<IActionResult> Index()
+        // GET: Employees
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
+        public IActionResult Index(SortStateAcceptedRec? sortOrder, string searchRecTypeAccRec, string searchStorageAccRec, int? page, bool resetFilter = false)
         {
-            var recPointContext = _context.AcceptedRecyclables.Take(20).Include(a => a.Employee).Include(a => a.RecyclableType).Include(a => a.Storage);
-            return View(await recPointContext.ToListAsync());
+            IQueryable<AcceptedRecyclable> acceptedRecyclables =
+                _context.AcceptedRecyclables.Include(ar => ar.Employee)
+                .Include(ar => ar.Storage).Include(ar => ar.RecyclableType);
+            sortOrder ??= GetSortStateFromSessionOrSetDefault();
+            page ??= GetCurrentPageFromSessionOrSetDefault();
+            if (resetFilter)
+            {
+                HttpContext.Session.Remove(_currentFilterRecType);
+                HttpContext.Session.Remove(_currentFilterStorage);
+            }
+            searchRecTypeAccRec ??= GetCurrentFilterRecTypeOrSetDefault();
+            searchStorageAccRec ??= GetCurrentFilterStorageOrSetDefault();
+            acceptedRecyclables = Search(acceptedRecyclables, (SortStateAcceptedRec)sortOrder, searchRecTypeAccRec, searchStorageAccRec);
+            var count = acceptedRecyclables.Count();
+            acceptedRecyclables = acceptedRecyclables.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
+            SaveValuesInSession((SortStateAcceptedRec)sortOrder, (int)page, searchRecTypeAccRec, searchStorageAccRec);
+            AcceptedRecyclablesViewModel acceptedRecyclablesView = new AcceptedRecyclablesViewModel()
+            {
+                AcceptedRecyclables = acceptedRecyclables,
+                PageViewModel = new PageViewModel(count, (int)page, _pageSize)
+            };
+            return View(acceptedRecyclablesView);
         }
 
         // GET: AcceptedRecyclables/Details/5
@@ -175,6 +204,73 @@ namespace WebApp.Controllers
         private bool AcceptedRecyclableExists(int id)
         {
           return _context.AcceptedRecyclables.Any(e => e.Id == id);
+        }
+        private IQueryable<AcceptedRecyclable> Search(IQueryable<AcceptedRecyclable> acceptedRecyclables,
+            SortStateAcceptedRec sortOrder, string searchRecTypeAccRec, string searchStorageAccRec)
+        {
+            ViewData["searchRecTypeAccRec"] = searchRecTypeAccRec;
+            ViewData["searchStorageAccRec"] = searchStorageAccRec;
+            acceptedRecyclables = acceptedRecyclables.Where(e => e.RecyclableType.Name.Contains(searchRecTypeAccRec ?? "")
+            & e.Storage.Name.Contains(searchStorageAccRec ?? ""));
+
+            ViewData["Employee"] = sortOrder == SortStateAcceptedRec.EmployeeAsc ? SortStateAcceptedRec.EmployeeDesc : SortStateAcceptedRec.EmployeeAsc;
+            ViewData["Storage"] = sortOrder == SortStateAcceptedRec.StorageAsc ? SortStateAcceptedRec.StorageDesc : SortStateAcceptedRec.StorageAsc;
+            ViewData["Date"] = sortOrder == SortStateAcceptedRec.DateAsc ? SortStateAcceptedRec.DateDesc : SortStateAcceptedRec.DateAsc;
+            ViewData["Quantity"] = sortOrder == SortStateAcceptedRec.QuantityAsc ? SortStateAcceptedRec.QuantityDesc : SortStateAcceptedRec.QuantityAsc;
+            ViewData["RecyclableType"] = sortOrder == SortStateAcceptedRec.RecyclableTypeAsc ? SortStateAcceptedRec.RecyclableTypeDesc : SortStateAcceptedRec.RecyclableTypeAsc;
+
+            acceptedRecyclables = sortOrder switch
+            {
+                SortStateAcceptedRec.EmployeeAsc => acceptedRecyclables
+                .OrderBy(ar => ar.Employee.Surname + " " + ar.Employee.Name + " " + ar.Employee.Patronymic),
+                SortStateAcceptedRec.EmployeeDesc => acceptedRecyclables
+                .OrderByDescending(ar => ar.Employee.Surname + " " + ar.Employee.Name + " " + ar.Employee.Patronymic),
+                SortStateAcceptedRec.StorageAsc => acceptedRecyclables.OrderBy(ar => ar.Storage.Name),
+                SortStateAcceptedRec.StorageDesc => acceptedRecyclables.OrderByDescending(ar => ar.Storage.Name),
+                SortStateAcceptedRec.DateAsc => acceptedRecyclables.OrderBy(ar => ar.Date),
+                SortStateAcceptedRec.DateDesc => acceptedRecyclables.OrderByDescending(ar => ar.Date),
+                SortStateAcceptedRec.QuantityAsc => acceptedRecyclables.OrderBy(e => e.Quantity),
+                SortStateAcceptedRec.QuantityDesc => acceptedRecyclables.OrderByDescending(e => e.Quantity),
+                SortStateAcceptedRec.RecyclableTypeAsc => acceptedRecyclables.OrderBy(e => e.RecyclableType.Name),
+                SortStateAcceptedRec.RecyclableTypeDesc => acceptedRecyclables.OrderByDescending(e => e.RecyclableType.Name),
+                SortStateAcceptedRec.No => acceptedRecyclables.OrderBy(e => e.Id),
+                _ => acceptedRecyclables.OrderBy(e => e.Id)
+            };
+
+            return acceptedRecyclables;
+        }
+        private void SaveValuesInSession(SortStateAcceptedRec sortOrder, int page, string searchRecTypeAccRec, string searchStorageAccRec)
+        {
+            HttpContext.Session.Remove(_currentSortOrder);
+            HttpContext.Session.Remove(_currentPage);
+            HttpContext.Session.Remove(_currentFilterRecType);
+            HttpContext.Session.Remove(_currentFilterStorage);
+            HttpContext.Session.SetString(_currentSortOrder, sortOrder.ToString());
+            HttpContext.Session.SetString(_currentPage, page.ToString());
+            HttpContext.Session.SetString(_currentFilterRecType, searchRecTypeAccRec);
+            HttpContext.Session.SetString(_currentFilterStorage, searchStorageAccRec);
+        }
+        private SortStateAcceptedRec GetSortStateFromSessionOrSetDefault()
+        {
+            return HttpContext.Session.Keys.Contains(_currentSortOrder) ?
+                (SortStateAcceptedRec)Enum.Parse(typeof(SortStateAcceptedRec),
+                HttpContext.Session.GetString(_currentSortOrder)) : SortStateAcceptedRec.No;
+        }
+        private int GetCurrentPageFromSessionOrSetDefault()
+        {
+            return HttpContext.Session.Keys.Contains(_currentPage) ?
+                Convert.ToInt32(HttpContext.Session.GetString(_currentPage)) : 1;
+        }
+        private string GetCurrentFilterRecTypeOrSetDefault()
+        {
+            return HttpContext.Session.Keys.Contains(_currentFilterRecType) ?
+                HttpContext.Session.GetString(_currentFilterRecType) : string.Empty;
+        }
+
+        private string GetCurrentFilterStorageOrSetDefault()
+        {
+            return HttpContext.Session.Keys.Contains(_currentFilterStorage) ?
+                HttpContext.Session.GetString(_currentFilterStorage) : string.Empty;
         }
     }
 }
