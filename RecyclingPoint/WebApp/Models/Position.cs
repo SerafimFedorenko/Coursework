@@ -6,6 +6,7 @@ namespace WebApp.Models
         [Key]
         [Display(Name = "Код должности")]
         public int Id { get; set; }
+        [Required(ErrorMessage = "Не указана должность")]
         [Display(Name = "Должность")]
         public string Name { get; set; }
         public ICollection<Employee> Employees { get; set; }

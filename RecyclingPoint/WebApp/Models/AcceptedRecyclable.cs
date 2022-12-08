@@ -23,8 +23,11 @@ namespace WebApp.Models
         [Display(Name = "Тип вторсырья")]
         public RecyclableType? RecyclableType { get; set; }
         [Display(Name = "Количество")]
+        [Required(ErrorMessage = "Не указано количество")]
+        [Range(1, 10000, ErrorMessage = "Недопустимое значение")]
         public int Quantity { get; set; }
         [Display(Name = "Дата")]
+        [Required(ErrorMessage = "Не указана дата")]
         [DataType(DataType.Date)]
         public DateTime Date { get; set; }
     }
