@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
+using WebApp.Infrastructure;
 using WebApp.Models;
 using WebApp.Models.SortStates;
 using WebApp.ViewModels;
@@ -211,20 +212,19 @@ namespace WebApp.Controllers
             HttpContext.Session.Remove(_currentSortOrder);
             HttpContext.Session.Remove(_currentPage);
             HttpContext.Session.Remove(_currentFilterStorageType);
-            HttpContext.Session.SetString(_currentSortOrder, sortOrder.ToString());
+            HttpContext.Session.Set(_currentSortOrder, sortOrder);
             HttpContext.Session.SetString(_currentPage, page.ToString());
             HttpContext.Session.SetString(_currentFilterStorageType, searchStorageType);
         }
         private SortStateStorageType GetSortStateFromSessionOrSetDefault()
         {
             return HttpContext.Session.Keys.Contains(_currentSortOrder) ?
-                (SortStateStorageType)Enum.Parse(typeof(SortStateStorageType),
-                HttpContext.Session.GetString(_currentSortOrder)) : SortStateStorageType.No;
+                HttpContext.Session.Get<SortStateStorageType>(_currentSortOrder) : SortStateStorageType.No;
         }
         private int GetCurrentPageFromSessionOrSetDefault()
         {
             return HttpContext.Session.Keys.Contains(_currentPage) ?
-                Convert.ToInt32(HttpContext.Session.GetString(_currentPage)) : 1;
+                HttpContext.Session.Get<int>(_currentPage) : 1;
         }
         private string GetCurrentFilterStorageTypeOrSetDefault()
         {

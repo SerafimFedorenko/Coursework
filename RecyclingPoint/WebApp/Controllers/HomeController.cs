@@ -25,5 +25,9 @@ namespace WebApp.Controllers
             HomeViewModel homeViewModel = new HomeViewModel(positions, employees, storages);
             return View(homeViewModel);
         }
+        public IActionResult Privacy()
+        {
+            return View();
+        }
     }
 }

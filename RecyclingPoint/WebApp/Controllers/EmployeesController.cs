@@ -234,7 +234,7 @@ namespace WebApp.Controllers
             HttpContext.Session.Remove(_currentFilterSurname);
             HttpContext.Session.Remove(_currentFilterPosition);
             HttpContext.Session.SetString(_currentSortOrder, sortOrder.ToString());
-            HttpContext.Session.SetString(_currentPage, page.ToString());
+            HttpContext.Session.Set<int>(_currentPage, page);
             HttpContext.Session.SetString(_currentFilterSurname, searchSurname);
             HttpContext.Session.SetString(_currentFilterPosition, searchPosition);
         }
@@ -247,7 +247,7 @@ namespace WebApp.Controllers
         private int GetCurrentPageFromSessionOrSetDefault()
         {
             return HttpContext.Session.Keys.Contains(_currentPage) ?
-                Convert.ToInt32(HttpContext.Session.GetString(_currentPage)) : 1;
+                HttpContext.Session.Get<int>(_currentPage) : 1;
         }
         private string GetCurrentFilterSurnameOrSetDefault()
         {

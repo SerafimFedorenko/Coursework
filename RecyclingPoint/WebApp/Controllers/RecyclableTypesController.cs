@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Data;
+using WebApp.Infrastructure;
 using WebApp.Models;
 using WebApp.Models.SortStates;
 using WebApp.ViewModels;
@@ -221,7 +222,7 @@ namespace WebApp.Controllers
         private int GetCurrentPageFromSessionOrSetDefault()
         {
             return HttpContext.Session.Keys.Contains(_currentPage) ?
-                Convert.ToInt32(HttpContext.Session.GetString(_currentPage)) : 1;
+                HttpContext.Session.Get<int>(_currentPage) : 1;
         }
         private string GetCurrentFilterRecyclableTypeOrSetDefault()
         {
