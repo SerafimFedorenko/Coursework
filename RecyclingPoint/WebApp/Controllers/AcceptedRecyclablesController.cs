@@ -48,9 +48,9 @@ namespace WebApp.Controllers
             var count = acceptedRecyclables.Count();
             acceptedRecyclables = acceptedRecyclables.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
             SaveValuesInSession((SortStateAcceptedRec)sortOrder, (int)page, searchRecTypeAccRec, searchStorageAccRec);
-            AcceptedRecyclablesViewModel acceptedRecyclablesView = new AcceptedRecyclablesViewModel()
+            IndexViewModel<AcceptedRecyclable> acceptedRecyclablesView = new IndexViewModel<AcceptedRecyclable>()
             {
-                AcceptedRecyclables = acceptedRecyclables,
+                Items = acceptedRecyclables,
                 PageViewModel = new PageViewModel(count, (int)page, _pageSize)
             };
             return View(acceptedRecyclablesView);

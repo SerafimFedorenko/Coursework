@@ -15,6 +15,7 @@ namespace WebApp.Controllers
 {
     public class StoragesController : Controller
     {
+
         private readonly RecPointContext _context;
         private int _pageSize = 25;
         private string _currentPage = "pageStorages";
@@ -45,9 +46,9 @@ namespace WebApp.Controllers
             var count = storages.Count();
             storages = storages.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
             SaveValuesInSession((SortStateStorage)sortOrder, (int)page, searchStorageType, searchNameStorages);
-            StoragesViewModel storagesView = new StoragesViewModel()
+            IndexViewModel<Storage> storagesView = new IndexViewModel<Storage>()
             {
-                Storages = storages,
+                Items = storages,
                 PageViewModel = new PageViewModel(count, (int)page, _pageSize)
             };
             return View(storagesView);

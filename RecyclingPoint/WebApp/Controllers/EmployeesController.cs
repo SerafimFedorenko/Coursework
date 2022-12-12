@@ -23,7 +23,7 @@ namespace WebApp.Controllers
         private string _currentPage = "page";
         private string _currentSortOrder = "sortOrderEmployees";
         private string _currentFilterSurname = "searchSurnameEmployees";
-        private string _currentFilterPosition = "searchPositionEmployees";
+        private string _currentFilterExperience = "searchExpEmployees";
 
         public EmployeesController(RecPointContext context)
         {
@@ -32,7 +32,7 @@ namespace WebApp.Controllers
 
         // GET: Employees
         [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
-        public IActionResult Index(SortStateEmployee? sortOrder, string searchSurname, string searchPosition, int? page, bool resetFilter = false)
+        public IActionResult Index(SortStateEmployee? sortOrder, string searchSurname, int? searchExperience, int? page, bool resetFilter = false)
         {
             IQueryable<Employee> employees = _context.Employees.Include(e => e.Position);
             sortOrder ??= GetSortStateFromSessionOrSetDefault();
@@ -40,17 +40,17 @@ namespace WebApp.Controllers
             if(resetFilter)
             {
                 HttpContext.Session.Remove(_currentFilterSurname);
-                HttpContext.Session.Remove(_currentFilterPosition);
+                HttpContext.Session.Remove(_currentFilterExperience);
             }
             searchSurname ??= GetCurrentFilterSurnameOrSetDefault();
-            searchPosition ??= GetCurrentFilterPositionOrSetDefault();
-            employees = Search(employees, (SortStateEmployee)sortOrder, searchSurname, searchPosition);
+            searchExperience ??= GetCurrentFilterExperienceOrSetDefault();
+            employees = Search(employees, (SortStateEmployee)sortOrder, searchSurname, searchExperience);
             var count = employees.Count();
             employees = employees.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
-            SaveValuesInSession((SortStateEmployee)sortOrder, (int)page, searchSurname, searchPosition);
-            EmployeesViewModel employeesView = new EmployeesViewModel()
+            SaveValuesInSession((SortStateEmployee)sortOrder, (int)page, searchSurname, searchExperience);
+            IndexViewModel<Employee> employeesView = new IndexViewModel<Employee>()
             {
-                Employees = employees,
+                Items = employees,
                 PageViewModel = new PageViewModel(count, (int)page, _pageSize)
             };
             return View(employeesView);
@@ -196,12 +196,15 @@ namespace WebApp.Controllers
         }
 
         private IQueryable<Employee> Search(IQueryable<Employee> employees,
-            SortStateEmployee sortOrder, string searchSurname, string searchPosition)
+            SortStateEmployee sortOrder, string searchSurname, int? searchExperience)
         {
             ViewData["searchSurname"] = searchSurname;
-            ViewData["searchPosition"] = searchPosition;
-            employees = employees.Where(e => e.Surname.Contains(searchSurname ?? "")
-            & e.Position.Name.Contains(searchPosition ?? ""));
+            ViewData["searchExperience"] = searchExperience;
+            employees = employees.Where(e => e.Surname.Contains(searchSurname ?? ""));
+            if(searchExperience != null)
+            {
+                employees = employees.Where(e => e.Experience == searchExperience);
+            }
 
             ViewData["Surname"] = sortOrder == SortStateEmployee.SurnameAsc ? SortStateEmployee.SurnameDesc : SortStateEmployee.SurnameAsc;
             ViewData["Name"] = sortOrder == SortStateEmployee.NameAsc ? SortStateEmployee.NameDesc : SortStateEmployee.NameAsc;
@@ -227,16 +230,16 @@ namespace WebApp.Controllers
 
             return employees;
         }
-        private void SaveValuesInSession(SortStateEmployee sortOrder, int page, string searchSurname, string searchPosition)
+        private void SaveValuesInSession(SortStateEmployee sortOrder, int page, string searchSurname, int? searchExperience)
         {
             HttpContext.Session.Remove(_currentSortOrder);
             HttpContext.Session.Remove(_currentPage);
             HttpContext.Session.Remove(_currentFilterSurname);
-            HttpContext.Session.Remove(_currentFilterPosition);
+            HttpContext.Session.Remove(_currentFilterExperience);
             HttpContext.Session.SetString(_currentSortOrder, sortOrder.ToString());
             HttpContext.Session.Set<int>(_currentPage, page);
             HttpContext.Session.SetString(_currentFilterSurname, searchSurname);
-            HttpContext.Session.SetString(_currentFilterPosition, searchPosition);
+            HttpContext.Session.Set<int?>(_currentFilterExperience, searchExperience);
         }
         private SortStateEmployee GetSortStateFromSessionOrSetDefault()
         {
@@ -255,10 +258,21 @@ namespace WebApp.Controllers
                 HttpContext.Session.GetString(_currentFilterSurname) : string.Empty;
         }
 
-        private string GetCurrentFilterPositionOrSetDefault()
+        private int? GetCurrentFilterExperienceOrSetDefault()
         {
-            return HttpContext.Session.Keys.Contains(_currentFilterPosition) ?
-                HttpContext.Session.GetString(_currentFilterPosition) : string.Empty;
+            if (HttpContext.Session.Keys.Contains(_currentFilterExperience))
+            {
+                try
+                {
+                    HttpContext.Session.Get<int>(_currentFilterExperience);
+                }
+                catch
+                {
+                    return null;
+                }
+                return HttpContext.Session.Get<int>(_currentFilterExperience);
+            }
+            return null;
         }
     }
 }

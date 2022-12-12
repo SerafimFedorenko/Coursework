@@ -9,7 +9,6 @@
    asp-route-pageSize="@Model.PageSize"
    class="btn btn-outline-dark">
         &lt;&lt;
-        <i class="glyphicon glyphicon-chevron-right"></i>
     </a>
 }
 
@@ -20,13 +19,11 @@
    asp-route-pageSize="@Model.PageSize"
    class="btn btn-outline-dark">
         @(Model.PageNumber - 1)
-        <i class="glyphicon glyphicon-chevron-right"></i>
     </a>
 }
 
 <a class="btn btn-dark">
     @Model.PageNumber
-    <i class="glyphicon glyphicon-chevron-right"></i>
 </a>
 
 @if (Model.PageNumber < Model.TotalPages)
@@ -36,7 +33,6 @@
    asp-route-pageSize="@Model.PageSize"
    class="btn btn-outline-dark">
         @(Model.PageNumber + 1)
-        <i class="glyphicon glyphicon-chevron-right"></i>
     </a>
 }
 
@@ -47,6 +43,5 @@
    asp-route-pageSize="@Model.PageSize"
    class="btn btn-outline-dark">
         >>
-        <i class="glyphicon glyphicon-chevron-right"></i>
     </a>
 }

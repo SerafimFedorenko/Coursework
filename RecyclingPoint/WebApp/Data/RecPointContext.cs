@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using WebApp.Models;
 
 namespace WebApp.Data
@@ -16,14 +15,5 @@ namespace WebApp.Data
         {
 
         }
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    ConfigurationBuilder builder = new();
-        //    string connectionString = "Data Source=.\\SQLEXPRESS;Initial Catalog=recycling_point0;Integrated Security=True";
-        //    _ = optionsBuilder
-        //        .UseSqlServer(connectionString)
-        //        .Options;
-        //    optionsBuilder.LogTo(message => System.Diagnostics.Debug.WriteLine(message));
-        //}
     }
 }

@@ -43,9 +43,9 @@ namespace WebApp.Controllers
             var count = storageTypes.Count();
             storageTypes = storageTypes.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
             SaveValuesInSession((SortStateStorageType)sortOrder, (int)page, searchStorageType);
-            StorageTypesViewModel StorageTypesView = new StorageTypesViewModel()
+            IndexViewModel<StorageType> StorageTypesView = new IndexViewModel<StorageType>()
             {
-                StorageTypes = storageTypes,
+                Items = storageTypes,
                 PageViewModel = new PageViewModel(count, (int)page, _pageSize)
             };
             return View(StorageTypesView);

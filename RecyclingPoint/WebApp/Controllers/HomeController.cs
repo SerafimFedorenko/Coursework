@@ -17,12 +17,7 @@ namespace WebApp.Controllers
         //[ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
         public IActionResult Index()
         {
-            int rowsNumber = 50;
-            List<Position> positions = _db.Positions.Take(rowsNumber).ToList();
-            List<Storage> storages = _db.Storages.Take(rowsNumber).ToList();
-            List<Employee> employees = _db.Employees.Take(rowsNumber).ToList();
-
-            HomeViewModel homeViewModel = new HomeViewModel(positions, employees, storages);
+            HomeViewModel homeViewModel = new HomeViewModel();
             return View(homeViewModel);
         }
         public IActionResult Privacy()

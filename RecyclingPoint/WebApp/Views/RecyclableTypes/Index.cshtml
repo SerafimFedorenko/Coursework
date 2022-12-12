@@ -1,15 +1,18 @@
 ﻿@using WebApp.ViewModels
-@model RecyclableTypesViewModel
+@model IndexViewModel<RecyclableType>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Список";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Список видов вторсырья</h1>
 
 <p>
-    <a asp-action="Create">Добавить вид вторсырья</a>
+    <a asp-action="Create"
+       class="btn btn-outline-success">
+        Добавить
+    </a>
 </p>
 
 @using (Html.BeginForm("Index", "RecyclableTypes", FormMethod.Post))
@@ -17,16 +20,18 @@
     <fieldset>
         Должность:
         <input type="text" name="searchRecyclableType" value="@ViewData["searchRecyclableType"]?.ToString()" />
-        <input type="submit" value="Найти" />
+        <input type="submit" value="Найти" class="btn btn-secondary" />
+    </fieldset>
+    <br>
+    <p>
         <a asp-action="Index"
        asp-route-resetFilter="@true"
        asp-route-page="@Model.PageViewModel.PageNumber"
        asp-route-pageSize="@Model.PageViewModel.PageSize"
-       class="btn btn-danger">
-            <i class="glyphicon glyphicon-chevron-left"></i>
+       class="btn btn-warning">
             Сброс фильтра
         </a>
-    </fieldset>
+    </p>
 }
 
 @await Html.PartialAsync("_PageButtons", Model.PageViewModel)
@@ -36,19 +41,19 @@
         <tr>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewBag.Name">
-                    @Html.DisplayNameFor(model => model.RecyclableTypes.FirstOrDefault().Name)
+                    @Html.DisplayNameFor(model => model.Items.FirstOrDefault().Name)
                 </a>
             </th>
             <th>
                 <a asp-action="Index" asp-route-sortOrder="@ViewBag.Price">
-                    @Html.DisplayNameFor(model => model.RecyclableTypes.FirstOrDefault().Price)
+                    @Html.DisplayNameFor(model => model.Items.FirstOrDefault().Price)
                 </a>
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.RecyclableTypes)
+        @foreach (var item in Model.Items)
         {
             <tr>
                 <td>
@@ -58,9 +63,7 @@
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Изменить</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Подробности</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                    @await Html.PartialAsync("_EditDetailsDelete", item.Id)
                 </td>
             </tr>
         }

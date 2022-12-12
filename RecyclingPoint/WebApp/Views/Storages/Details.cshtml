@@ -1,7 +1,7 @@
 ﻿@model WebApp.Models.Storage
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Подробности";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -62,6 +62,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Редактировать</a> |
-    <a asp-action="Index">Вернуться к списку</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Редактировать</a> 
+    <a asp-action="Index" class="btn btn-info">Вернуться к списку</a>
 </div>

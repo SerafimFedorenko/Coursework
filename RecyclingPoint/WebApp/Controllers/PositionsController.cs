@@ -42,9 +42,9 @@ namespace WebApp.Controllers
             var count = positions.Count();
             positions = positions.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
             SaveValuesInSession((SortStatePosition)sortOrder, (int)page, searchPosition);
-            PositionsViewModel positionsView = new PositionsViewModel()
+            IndexViewModel<Position> positionsView = new IndexViewModel<Position>()
             {
-                Positions = positions,
+                Items = positions,
                 PageViewModel = new PageViewModel(count, (int)page, _pageSize)
             };
             return View(positionsView);
