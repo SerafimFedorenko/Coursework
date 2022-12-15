@@ -45,14 +45,9 @@ namespace FuelStation
                     .AddDefaultUI()
                     .AddDefaultTokenProviders();
 
-            //добавление сессии
             services.AddDistributedMemoryCache();
-            services.AddSession(options =>
-            {
-                options.Cookie.Name = ".Fuel.Session";
-                options.IdleTimeout = System.TimeSpan.FromSeconds(3600);
-                options.Cookie.IsEssential = true;
-            });
+            //добавление сессии
+            services.AddSession();
 
             //Использование MVC
             services.AddControllersWithViews();

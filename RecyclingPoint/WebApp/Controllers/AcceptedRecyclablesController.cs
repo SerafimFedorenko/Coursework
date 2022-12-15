@@ -28,8 +28,7 @@ namespace WebApp.Controllers
             _context = context;
         }
 
-        // GET: Employees
-        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
+        // GET: AcceptedRecyclables
         public IActionResult Index(SortStateAcceptedRec? sortOrder, string searchRecTypeAccRec, string searchStorageAccRec, int? page, bool resetFilter = false)
         {
             IQueryable<AcceptedRecyclable> acceptedRecyclables =

@@ -42,7 +42,6 @@ namespace FuelStation.Controllers
                     new UserViewModel
                     {
                         Id = user.Id,
-                        UserName = user.UserName,
                         Email = user.Email,
                         RoleName = urole
                     });
@@ -71,7 +70,6 @@ namespace FuelStation.Controllers
                 IdentityUser user = new IdentityUser
                 {
                     Email = model.Email,
-                    UserName = model.UserName,
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
@@ -114,7 +112,6 @@ namespace FuelStation.Controllers
             {
                 Id = user.Id,
                 Email = user.Email,
-                UserName = user.UserName,
                 UserRole = userRole
             };
             ViewData["UserRole"] = new SelectList(allRoles, "Name", "Name", model.UserRole);
@@ -142,7 +139,6 @@ namespace FuelStation.Controllers
                         await _userManager.AddToRoleAsync(user, newRole);
                     }
                     user.Email = model.Email;
-                    user.UserName = model.UserName;
 
 
                     var result = await _userManager.UpdateAsync(user);
