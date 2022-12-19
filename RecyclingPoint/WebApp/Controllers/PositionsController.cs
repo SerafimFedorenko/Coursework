@@ -16,7 +16,7 @@ namespace WebApp.Controllers
     public class PositionsController : Controller
     {
         private readonly RecPointContext _context;
-        private int _pageSize = 25;
+        private int _pageSize = 20;
         private string _currentPage = "pagePositions";
         private string _currentSortOrder = "sortOrderPositions";
         private string _currentFilterPosition = "searchPositionPositions";
@@ -40,12 +40,13 @@ namespace WebApp.Controllers
             searchPosition ??= GetCurrentFilterPositionOrSetDefault();
             positions = Search(positions, (SortStatePosition)sortOrder, searchPosition);
             var count = positions.Count();
-            positions = positions.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
+            PageViewModel pageViewModel = new PageViewModel(count, (int)page, _pageSize);
+            positions = positions.Skip(((int)pageViewModel.PageNumber - 1) * _pageSize).Take(_pageSize);
             SaveValuesInSession((SortStatePosition)sortOrder, (int)page, searchPosition);
             IndexViewModel<Position> positionsView = new IndexViewModel<Position>()
             {
                 Items = positions,
-                PageViewModel = new PageViewModel(count, (int)page, _pageSize)
+                PageViewModel = pageViewModel
             };
             return View(positionsView);
         }

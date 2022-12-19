@@ -16,8 +16,8 @@ namespace WebApp.Controllers
     public class AcceptedRecyclablesController : Controller
     {
         private readonly RecPointContext _context;
-        private int _pageSize = 40;
-        private string _currentPage = "page";
+        private int _pageSize = 50;
+        private string _currentPage = "pageAcceptedRec";
         private string _currentSortOrder = "sortOrderAcceptedRec";
         private string _currentFilterRecType = "searchRecTypeAccRec";
         private string _currentFilterStorage = "searchPositionAccRec";
@@ -45,12 +45,13 @@ namespace WebApp.Controllers
             searchStorageAccRec ??= GetCurrentFilterStorageOrSetDefault();
             acceptedRecyclables = Search(acceptedRecyclables, (SortStateAcceptedRec)sortOrder, searchRecTypeAccRec, searchStorageAccRec);
             var count = acceptedRecyclables.Count();
-            acceptedRecyclables = acceptedRecyclables.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
+            PageViewModel pageViewModel = new PageViewModel(count, (int)page, _pageSize);
+            acceptedRecyclables = acceptedRecyclables.Skip(((int)pageViewModel.PageNumber - 1) * _pageSize).Take(_pageSize);
             SaveValuesInSession((SortStateAcceptedRec)sortOrder, (int)page, searchRecTypeAccRec, searchStorageAccRec);
             IndexViewModel<AcceptedRecyclable> acceptedRecyclablesView = new IndexViewModel<AcceptedRecyclable>()
             {
                 Items = acceptedRecyclables,
-                PageViewModel = new PageViewModel(count, (int)page, _pageSize)
+                PageViewModel = pageViewModel
             };
             return View(acceptedRecyclablesView);
         }

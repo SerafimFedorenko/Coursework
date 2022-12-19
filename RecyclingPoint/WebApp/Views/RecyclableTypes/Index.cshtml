@@ -18,7 +18,7 @@
 @using (Html.BeginForm("Index", "RecyclableTypes", FormMethod.Post))
 {
     <fieldset>
-        Должность:
+        Вид вторсырья:
         <input type="text" name="searchRecyclableType" value="@ViewData["searchRecyclableType"]?.ToString()" />
         <input type="submit" value="Найти" class="btn btn-secondary" />
     </fieldset>
@@ -60,7 +60,7 @@
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Price)
+                    @Math.Round(item.Price, 2)
                 </td>
                 <td>
                     @await Html.PartialAsync("_EditDetailsDelete", item.Id)

@@ -47,7 +47,12 @@ namespace FuelStation
 
             services.AddDistributedMemoryCache();
             //добавление сессии
-            services.AddSession();
+            services.AddSession(options =>
+            {
+                options.Cookie.Name = ".RecyclingPoint.Session";
+                options.IdleTimeout = System.TimeSpan.FromSeconds(3600);
+                options.Cookie.IsEssential = true;
+            });
 
             //Использование MVC
             services.AddControllersWithViews();

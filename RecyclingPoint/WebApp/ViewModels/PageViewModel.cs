@@ -11,9 +11,16 @@ namespace WebApp.ViewModels
 
         public PageViewModel(int count, int pageNumber=1, int pageSize=50)
         {
-            PageNumber = pageNumber;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             PageSize = pageSize;
+            if(pageNumber > TotalPages || pageNumber < 1)
+            {
+                PageNumber = 1;
+            }
+            else
+            {
+                PageNumber = pageNumber;
+            }
         }
 
         public bool HasPreviousPage

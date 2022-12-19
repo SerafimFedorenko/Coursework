@@ -16,7 +16,7 @@ namespace WebApp.Controllers
     public class RecyclableTypesController : Controller
     {
         private readonly RecPointContext _context;
-        private int _pageSize = 25;
+        private int _pageSize = 20;
         private string _currentPage = "pageRecyclableTypes";
         private string _currentSortOrder = "sortOrderRecyclableTypes";
         private string _currentFilterRecyclableType = "searchRecyclableTypeRecyclableTypes";
@@ -41,12 +41,13 @@ namespace WebApp.Controllers
             searchRecyclableType ??= GetCurrentFilterRecyclableTypeOrSetDefault();
             RecyclableTypes = Search(RecyclableTypes, (SortStateRecyclableType)sortOrder, searchRecyclableType);
             var count = RecyclableTypes.Count();
-            RecyclableTypes = RecyclableTypes.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
+            PageViewModel pageViewModel = new PageViewModel(count, (int)page, _pageSize);
+            RecyclableTypes = RecyclableTypes.Skip(((int)pageViewModel.PageNumber - 1) * _pageSize).Take(_pageSize);
             SaveValuesInSession((SortStateRecyclableType)sortOrder, (int)page, searchRecyclableType);
             IndexViewModel<RecyclableType> RecyclableTypesView = new IndexViewModel<RecyclableType>()
             {
                 Items = RecyclableTypes,
-                PageViewModel = new PageViewModel(count, (int)page, _pageSize)
+                PageViewModel = pageViewModel
             };
             return View(RecyclableTypesView);
         }

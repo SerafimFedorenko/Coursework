@@ -17,7 +17,7 @@ namespace WebApp.Controllers
     {
 
         private readonly RecPointContext _context;
-        private int _pageSize = 25;
+        private int _pageSize = 50;
         private string _currentPage = "pageStorages";
         private string _currentSortOrder = "sortOrderStorages";
         private string _currentFilterStorageType = "searchStorageTypeStorages";
@@ -29,7 +29,7 @@ namespace WebApp.Controllers
         }
 
         // GET: Storages
-        //[ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
+        [ResponseCache(Location = ResponseCacheLocation.Any, Duration = 294)]
         public IActionResult Index(SortStateStorage? sortOrder, string searchStorageType, string searchNameStorages, int? page, bool resetFilter = false)
         {
             IQueryable<Storage> storages = _context.Storages.Include(s => s.StorageType);
@@ -44,12 +44,13 @@ namespace WebApp.Controllers
             searchNameStorages ??= GetCurrentFilterNameOrSetDefault();
             storages = Search(storages, (SortStateStorage)sortOrder, searchStorageType, searchNameStorages);
             var count = storages.Count();
-            storages = storages.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
+            PageViewModel pageViewModel = new PageViewModel(count, (int)page, _pageSize);
+            storages = storages.Skip(((int)pageViewModel.PageNumber - 1) * _pageSize).Take(_pageSize);
             SaveValuesInSession((SortStateStorage)sortOrder, (int)page, searchStorageType, searchNameStorages);
             IndexViewModel<Storage> storagesView = new IndexViewModel<Storage>()
             {
                 Items = storages,
-                PageViewModel = new PageViewModel(count, (int)page, _pageSize)
+                PageViewModel = pageViewModel
             };
             return View(storagesView);
         }
@@ -193,11 +194,11 @@ namespace WebApp.Controllers
           return _context.Storages.Any(e => e.Id == id);
         }
         private IQueryable<Storage> Search(IQueryable<Storage> storages,
-            SortStateStorage sortOrder, string searchStorageType, string searchName)
+            SortStateStorage sortOrder, string searchStorageType, string searchNameStorages)
         {
-            ViewData["searchName"] = searchName;
+            ViewData["searchNameStorages"] = searchNameStorages;
             ViewData["searchStorageType"] = searchStorageType;
-            storages = storages.Where(e => e.Name.Contains(searchName ?? "")
+            storages = storages.Where(e => e.Name.Contains(searchNameStorages ?? "")
             & e.StorageType.Name.Contains(searchStorageType ?? ""));
 
             ViewData["Name"] = sortOrder == SortStateStorage.NameAsc ? SortStateStorage.NameDesc : SortStateStorage.NameAsc;

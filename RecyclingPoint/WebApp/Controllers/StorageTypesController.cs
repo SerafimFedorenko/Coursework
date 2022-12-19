@@ -16,7 +16,7 @@ namespace WebApp.Controllers
     public class StorageTypesController : Controller
     {
         private readonly RecPointContext _context;
-        private int _pageSize = 25;
+        private int _pageSize = 20;
         private string _currentPage = "pageStorageTypes";
         private string _currentSortOrder = "sortOrderStorageTypes";
         private string _currentFilterStorageType = "searchStorageTypeStorageTypes";
@@ -41,12 +41,13 @@ namespace WebApp.Controllers
             searchStorageType ??= GetCurrentFilterStorageTypeOrSetDefault();
             storageTypes = Search(storageTypes, (SortStateStorageType)sortOrder, searchStorageType);
             var count = storageTypes.Count();
-            storageTypes = storageTypes.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
+            PageViewModel pageViewModel = new PageViewModel(count, (int)page, _pageSize);
+            storageTypes = storageTypes.Skip(((int)pageViewModel.PageNumber - 1) * _pageSize).Take(_pageSize);
             SaveValuesInSession((SortStateStorageType)sortOrder, (int)page, searchStorageType);
             IndexViewModel<StorageType> StorageTypesView = new IndexViewModel<StorageType>()
             {
                 Items = storageTypes,
-                PageViewModel = new PageViewModel(count, (int)page, _pageSize)
+                PageViewModel = pageViewModel
             };
             return View(StorageTypesView);
         }

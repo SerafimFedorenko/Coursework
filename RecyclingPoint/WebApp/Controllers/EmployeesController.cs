@@ -19,8 +19,8 @@ namespace WebApp.Controllers
     public class EmployeesController : Controller
     {
         private readonly RecPointContext _context;
-        private int _pageSize = 40;
-        private string _currentPage = "page";
+        private int _pageSize = 50;
+        private string _currentPage = "pageEmployees";
         private string _currentSortOrder = "sortOrderEmployees";
         private string _currentFilterSurname = "searchSurnameEmployees";
         private string _currentFilterExperience = "searchExpEmployees";
@@ -46,12 +46,13 @@ namespace WebApp.Controllers
             searchExperience ??= GetCurrentFilterExperienceOrSetDefault();
             employees = Search(employees, (SortStateEmployee)sortOrder, searchSurname, searchExperience);
             var count = employees.Count();
-            employees = employees.Skip(((int)page - 1) * _pageSize).Take(_pageSize);
+            PageViewModel pageViewModel = new PageViewModel(count, (int)page, _pageSize);
+            employees = employees.Skip(((int)pageViewModel.PageNumber - 1) * _pageSize).Take(_pageSize);
             SaveValuesInSession((SortStateEmployee)sortOrder, (int)page, searchSurname, searchExperience);
             IndexViewModel<Employee> employeesView = new IndexViewModel<Employee>()
             {
                 Items = employees,
-                PageViewModel = new PageViewModel(count, (int)page, _pageSize)
+                PageViewModel = pageViewModel
             };
             return View(employeesView);
         }
