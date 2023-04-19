@@ -89,9 +89,11 @@
                 @Html.DisplayFor(modelItem => item.Date)
             </td>
             <td>
-                    @await Html.PartialAsync("_EditDetailsDelete", item.Id)
+                @await Html.PartialAsync("_EditDetailsDelete", item.Id)
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+@await Html.PartialAsync("_PageButtons", Model.PageViewModel)
