@@ -6,6 +6,7 @@ namespace WebApp.ViewModels.Users
     public class CreateUserViewModel
     {
         [EmailAddress(ErrorMessage = "Некорректный адрес")]
+        [Display(Name = "E-mail")]
         public string Email { get; set; }
         [Display(Name = "Пароль")]
         public string Password { get; set; }
